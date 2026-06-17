@@ -81,12 +81,25 @@ export const patchClientes = async (req, res) => {
 export const deleteClientes = async (req, res) => {
     try {
         const { id } = req.params;
-        const [result] = await conmysql.query('delete from clientes where cli_id = ?', [id]);
+        
+        // Primero eliminar pedidos_detalle asociados a los pedidos del cliente
+        await conmysql.query(
+            `DELETE FROM pedidos_detalle WHERE ped_id IN 
+            (SELECT ped_id FROM pedidos WHERE cli_id = ?)`, [id]
+        );
+        
+        // Luego eliminar los pedidos del cliente
+        await conmysql.query('DELETE FROM pedidos WHERE cli_id = ?', [id]);
+        
+        // Finalmente eliminar el cliente
+        const [result] = await conmysql.query('DELETE FROM clientes WHERE cli_id = ?', [id]);
 
-        if (result.affectedRows === 0) return res.status(404).json({ message: 'Cliente no encontrado' });
+        if (result.affectedRows === 0) 
+            return res.status(404).json({ message: 'Cliente no encontrado' });
 
         return res.status(200).json({ message: 'Cliente eliminado exitosamente' });
     } catch (error) {
+        console.log(error);
         return res.status(500).json({ message: 'Error al eliminar el cliente' });
     }
 }
