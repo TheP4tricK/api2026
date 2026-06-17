@@ -3,9 +3,11 @@ import { conmysql } from '../db.js';
 import {Router} from 'express'
 import { verificarJWT } from '../middlewares/verificarToken.js';
 import {deleteClientes, getClientes,getClientesxid, patchClientes, postInsertarClientes, putClientes} from '../controladores/clientesCtrl.js';
+
 import jwt from 'jsonwebtoken';
 const router=Router()
 //armar nuestras rutas
+
 
 const SECRET = 'clave123';
 router.post('/login', async (req, res) => {
