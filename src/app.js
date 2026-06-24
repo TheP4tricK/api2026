@@ -2,7 +2,8 @@ import express from 'express'
 import cors from 'cors';
 import clientesRoutes from './routes/clientes.routes.js'
 import ProductosRoutes from './routes/productos.routes.js'
-import path from 'path';  // ← "path" no "patch"
+import pedidosRoutes from './routes/pedidos.routes.js';
+import path from 'path'; 
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use('/upload', express.static(path.join("src", "upload")));
 // 4. Rutas
 app.use('/api', clientesRoutes);
 app.use('/api', ProductosRoutes);
+app.use('/api', pedidosRoutes);
 
 // 5. Catch-all al final
 app.use((req, res, next) => {
